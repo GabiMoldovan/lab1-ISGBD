@@ -22,6 +22,7 @@ public class Order {
     @Column(name = "order_id")
     private Long orderId;
 
+    // Defining MANY-TO-ONE relationship with User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
