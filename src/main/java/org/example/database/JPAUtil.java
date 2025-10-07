@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JPAUtil {
+    /// Class that gets the database connection details from the .env file and loads them into my-persistence-unit
+    ///
+
     private static EntityManagerFactory emf;
 
     public static EntityManagerFactory getEntityManagerFactory() {

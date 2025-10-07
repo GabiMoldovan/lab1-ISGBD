@@ -40,4 +40,17 @@ public class UserRepository {
             em.close();
         }
     }
+
+    public List<User> findAll() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try{
+            return em.createQuery("SELECT u FROM User u", User.class).getResultList();
+        } catch(Exception e){
+            e.printStackTrace();
+            return List.of();
+        }
+        finally {
+            em.close();
+        }
+    }
 }

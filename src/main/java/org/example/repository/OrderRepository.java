@@ -5,6 +5,8 @@ import jakarta.persistence.EntityTransaction;
 import org.example.database.JPAUtil;
 import org.example.entity.Order;
 
+import java.util.List;
+
 public class OrderRepository {
     public void save(Order order) {
         EntityManager em = JPAUtil.getEntityManager();
@@ -37,4 +39,17 @@ public class OrderRepository {
             em.close();
         }
     }
+
+    public List<Order> findAll() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT o FROM Order o", Order.class).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        } finally {
+            em.close();
+        }
+    }
+
 }
