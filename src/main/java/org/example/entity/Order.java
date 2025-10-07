@@ -24,7 +24,7 @@ public class Order {
 
     // Defining MANY-TO-ONE relationship with User
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "order_total", nullable = false, precision = 10, scale = 2)
