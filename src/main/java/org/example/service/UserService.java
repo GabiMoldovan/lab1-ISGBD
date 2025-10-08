@@ -3,7 +3,11 @@ package org.example.service;
 import org.example.entity.User;
 import org.example.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class UserService {
     UserRepository userRepository;
@@ -39,5 +43,33 @@ public class UserService {
 
     public void saveListOfUsers(List<User> users) {
         userRepository.saveListOfUsers(users);
+    }
+
+    private static <T> List<List<T>> partition(List<T> list, int size) {
+        List<List<T>> parts = new ArrayList<>();
+        for (int i = 0; i < list.size(); i += size) {
+            parts.add(list.subList(i, Math.min(i + size, list.size())));
+        }
+        return parts;
+    }
+
+    private void shutdownAndAwait(ExecutorService pool) {
+        pool.shutdown();
+        try {
+            if (!pool.awaitTermination(1, TimeUnit.HOURS)) {
+                pool.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            pool.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void parallelInsertUsers(List<User> users, int threadCount, int batchSize) {
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        for(List<User> batch : partition(users, batchSize)) {
+            executorService.submit(() -> saveListOfUsers(batch));
+        }
+        shutdownAndAwait(executorService);
     }
 }

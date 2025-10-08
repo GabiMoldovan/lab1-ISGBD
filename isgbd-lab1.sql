@@ -6,14 +6,15 @@
 -- Extensii
 CREATE EXTENSION IF NOT EXISTS pg_prewarm;
 CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 
 -- Setari de sesiune sigure (per-session)
-SET synchronous_commit = OFF;          -- accelereaza inserarile in sesiune curenta
-SET work_mem = '64MB';
-SET maintenance_work_mem = '2047MB';
+SET synchronous_commit = OFF;
+SET commit_delay = 100000;  -- 100ms grouping
+SET commit_siblings = 10;
+SET maintenance_work_mem = '1.99GB';
+SET work_mem = '1.99GB';
 
 
 -- ==========================================================
@@ -23,7 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
     user_id BIGSERIAL PRIMARY KEY,
     username TEXT NOT NULL,
     email TEXT NOT NULL,
-    country_code CHAR(2),
+    country_code VARCHAR(2),
     created_at TIMESTAMP DEFAULT NOW()
 ) PARTITION BY HASH (user_id);
 
@@ -72,3 +73,10 @@ END $$;
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders (user_id);
 
 ANALYZE;
+
+
+SELECT * FROM users;
+--SELECT * FROM orders;
+
+-- SHOW log_directory;
+-- SHOW log_filename;

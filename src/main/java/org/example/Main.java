@@ -9,8 +9,8 @@ import org.example.service.UserService;
 
 public class Main {
     public static void main(String[] args) {
-        //TODO: sa rezolv problema cu deschisu-inchisu conexiunii la baza de date la fiecare insert
         //System.out.println("Goodbye, World!");
+
         OrderRepository orderRepository = new OrderRepository();
         UserRepository userRepository = new UserRepository();
 

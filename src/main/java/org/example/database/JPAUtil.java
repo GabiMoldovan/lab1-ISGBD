@@ -9,32 +9,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JPAUtil {
-    /// Class that gets the database connection details from the .env file and loads them into my-persistence-unit
-    ///
 
-    private static EntityManagerFactory emf;
+    private static final EntityManagerFactory emf = buildEntityManagerFactory();
 
-    public static EntityManagerFactory getEntityManagerFactory() {
-        if (emf == null) {
-            Dotenv dotenv = Dotenv.load();
+    private static EntityManagerFactory buildEntityManagerFactory() {
+        Dotenv dotenv = Dotenv.load();
 
-            Map<String, String> props = new HashMap<>();
-            props.put("jakarta.persistence.jdbc.url", dotenv.get("DB_URL"));
-            props.put("jakarta.persistence.jdbc.user", dotenv.get("DB_USER"));
-            props.put("jakarta.persistence.jdbc.password", dotenv.get("DB_PASSWORD"));
-            props.put("jakarta.persistence.jdbc.driver", "org.postgresql.Driver");
-            props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        Map<String, Object> props = new HashMap<>();
+        props.put("jakarta.persistence.jdbc.url", dotenv.get("DB_URL"));
+        props.put("jakarta.persistence.jdbc.user", dotenv.get("DB_USER"));
+        props.put("jakarta.persistence.jdbc.password", dotenv.get("DB_PASSWORD"));
+        props.put("jakarta.persistence.jdbc.driver", "org.postgresql.Driver");
+        props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
-            emf = Persistence.createEntityManagerFactory("my-persistence-unit", props);
-        }
-        return emf;
+
+        props.put("hibernate.hikari.dataSource.reWriteBatchedInserts", "true");
+        props.put("hibernate.hikari.dataSource.defaultRowFetchSize", "5000");
+
+
+        return Persistence.createEntityManagerFactory("my-persistence-unit", props);
     }
 
     public static EntityManager getEntityManager() {
-        return getEntityManagerFactory().createEntityManager();
+        return emf.createEntityManager();
     }
 
     public static void close() {
-        if (emf != null) emf.close();
+        if (emf.isOpen()) {
+            emf.close();
+        }
     }
 }

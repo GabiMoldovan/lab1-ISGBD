@@ -93,9 +93,16 @@ public class UserRepository {
 
         try{
             tx.begin();
-            for(User user : users) {
-                em.persist(user);
+            int batchSize = 1500;
+            for (int i = 0; i < users.size(); i++) {
+                em.persist(users.get(i));
+                if (i > 0 && i % batchSize == 0) {
+                    em.flush();
+                    em.clear();
+                }
             }
+            em.flush();
+            em.clear();
             tx.commit();
         } catch(Exception e){
             if(tx.isActive()) tx.rollback();

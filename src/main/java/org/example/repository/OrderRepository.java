@@ -76,9 +76,16 @@ public class OrderRepository {
 
         try{
             tx.begin();
-            for(Order order : orders) {
-                em.persist(order);
+            int batchSize = 1500;
+            for(int i=0;i<orders.size();i++) {
+                em.persist(orders.get(i));
+                if(i > 0 && i % batchSize == 0) {
+                    em.flush();
+                    em.clear();
+                }
             }
+            em.flush();
+            em.clear();
             tx.commit();
         } catch (Exception e) {
             if(tx.isActive()) tx.rollback();

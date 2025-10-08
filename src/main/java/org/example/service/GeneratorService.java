@@ -13,12 +13,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GeneratorService {
     private OrderService orderService;
     private UserService userService;
-    private static int countUsers;
 
     public GeneratorService(OrderService orderService, UserService userService) {
         this.orderService = orderService;
         this.userService = userService;
-        countUsers = userService.count();
     }
 
     public int generateRandomNumberBetween(int min, int max) {
@@ -101,28 +99,33 @@ public class GeneratorService {
         return user;
     }
 
-    public Order generateOrder() {
+    public Order generateOrder(int actualNumberOfUsers) {
+
         BigDecimal min = new BigDecimal("1");
         BigDecimal max = new BigDecimal("2500");
 
         BigDecimal amount = generateRandomBigDecimal(min, max);
         String status = generateRandomOrderStatus();
 
-        Long assignOrderToUser = (long) generateRandomNumberBetween(1, countUsers);
+        Long assignOrderToUser = (long) generateRandomNumberBetween(1, actualNumberOfUsers);
 
         Order order = new Order();
 
         order.setOrderTotal(amount);
         order.setStatus(status);
-        order.setUser(userService.findById(assignOrderToUser));
+
+        User u = new User();
+        u.setUserId(assignOrderToUser);
+        order.setUser(u);
+
 
         return order;
     }
 
-    public List<Order> generateOrders(int numberOfOrders) {
+    public List<Order> generateOrders(int numberOfOrders, int actualNumberOfUsers) {
         List<Order> orders = new ArrayList<>();
         for(int i = 0; i < numberOfOrders; i++) {
-            orders.add(generateOrder());
+            orders.add(generateOrder(actualNumberOfUsers));
         }
         return orders;
     }
