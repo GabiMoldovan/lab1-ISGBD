@@ -68,14 +68,31 @@ public class GeneratorService {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
+    public String generateRandomEmail(int length) {
+        String allowedChars = "abcdefghijklmnopqrstuvwxyz1234567890_-.";
+        int localPartLength = length - "@testdata.com".length();
+
+        Random random = new Random();
+        StringBuilder localPart = new StringBuilder();
+
+        for (int i = 0; i < localPartLength; i++) {
+            int index = random.nextInt(allowedChars.length());
+            localPart.append(allowedChars.charAt(index));
+        }
+
+        return localPart.toString() + "@testdata.com";
+    }
+
 
     public User generateUser() {
         String username = generateRandomStringOfBetweenFiveEightCharacters();
         String countryCode = generateRandomCountryCode();
+        String email = generateRandomEmail(generateRandomNumberBetween(5,10));
 
         User user = new User();
 
         user.setUsername(username);
+        user.setEmail(email);
         user.setCountryCode(countryCode);
 
         return user;

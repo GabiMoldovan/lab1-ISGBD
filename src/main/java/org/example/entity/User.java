@@ -21,8 +21,11 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
+
+    @Column(name = "email", nullable = false)
+    private String email;
 
     @Column(name = "country_code", length = 2)
     private String countryCode;

@@ -19,7 +19,7 @@ public class JPAUtil {
             Dotenv dotenv = Dotenv.load();
 
             Map<String, String> props = new HashMap<>();
-            props.put("jakarta.persistence.jdbc.url", dotenv.get("DATABASE_URL"));
+            props.put("jakarta.persistence.jdbc.url", dotenv.get("DB_URL"));
             props.put("jakarta.persistence.jdbc.user", dotenv.get("DB_USER"));
             props.put("jakarta.persistence.jdbc.password", dotenv.get("DB_PASSWORD"));
             props.put("jakarta.persistence.jdbc.driver", "org.postgresql.Driver");
