@@ -5,6 +5,7 @@ import org.example.entity.User;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -109,6 +110,20 @@ public class GeneratorService {
     public void populateDatabaseWithOrders(int numberOfOrders) {
         for(int i = 0; i < numberOfOrders; i++) {
             Order order = generateOrder();
+            orderService.save(order);
+        }
+    }
+
+    public void populateDatabaseWithListOfUsers(List<User> users) {
+        for(int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            userService.save(user);
+        }
+    }
+
+    public void populateDatabaseWithListOfOrders(List<Order> orders) {
+        for(int i = 0; i < orders.size(); i++) {
+            Order order = orders.get(i);
             orderService.save(order);
         }
     }

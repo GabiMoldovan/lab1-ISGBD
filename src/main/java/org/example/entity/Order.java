@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
-@IdClass(OrderId.class)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -22,15 +21,14 @@ public class Order {
     @Column(name = "order_id")
     private Long orderId;
 
-    // Defining MANY-TO-ONE relationship with User
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "order_total", nullable = false, precision = 10, scale = 2)
     private BigDecimal orderTotal;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT IS NOW()")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false)

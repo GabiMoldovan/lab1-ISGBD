@@ -28,4 +28,8 @@ public class OrderService {
         List<Order> orders = orderRepository.findAll();
         return orders.size();
     }
+
+    public void deleteAllOrders() {
+        orderRepository.deleteAllOrders();
+    }
 }

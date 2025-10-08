@@ -22,6 +22,8 @@ public class JPAUtil {
             props.put("jakarta.persistence.jdbc.url", dotenv.get("DATABASE_URL"));
             props.put("jakarta.persistence.jdbc.user", dotenv.get("DB_USER"));
             props.put("jakarta.persistence.jdbc.password", dotenv.get("DB_PASSWORD"));
+            props.put("jakarta.persistence.jdbc.driver", "org.postgresql.Driver");
+            props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
             emf = Persistence.createEntityManagerFactory("my-persistence-unit", props);
         }

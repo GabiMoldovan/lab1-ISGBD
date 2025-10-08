@@ -52,4 +52,23 @@ public class OrderRepository {
         }
     }
 
+    public void deleteAllOrders() {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try{
+            tx.begin();
+            List<Order> orders = em.createQuery("SELECT o FROM Order o", Order.class).getResultList();
+            for(Order order : orders) {
+                em.remove(order);
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if(tx.isActive()) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
+
 }

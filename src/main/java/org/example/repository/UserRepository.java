@@ -65,4 +65,26 @@ public class UserRepository {
             em.close();
         }
     }
+
+    public void deleteAllUsers() {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try
+        {
+            tx.begin();
+
+            List<User> users = em.createQuery("SELECT u FROM User u", User.class).getResultList();
+            for(User user : users) { // when deleting users, it will cascade to orders as well
+                em.remove(user);
+            }
+
+            tx.commit();
+        } catch(Exception e) {
+            if(tx.isActive()) tx.rollback();
+            e.printStackTrace();
+        }
+        finally {
+            em.close();
+        }
+    }
 }
