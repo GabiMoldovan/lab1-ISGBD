@@ -53,4 +53,16 @@ public class UserRepository {
             em.close();
         }
     }
+
+    public User findById(Long id) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try{
+            return em.find(User.class, id);
+        } catch(Exception e){
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 }
