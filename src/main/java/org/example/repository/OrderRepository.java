@@ -68,4 +68,23 @@ public class OrderRepository {
         }
     }
 
+    public void saveListOfOrders(List<Order> orders) {
+        if(orders.isEmpty() || orders == null) return;
+
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try{
+            tx.begin();
+            for(Order order : orders) {
+                em.persist(order);
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if(tx.isActive()) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
 }

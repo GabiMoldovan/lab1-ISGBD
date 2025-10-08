@@ -36,4 +36,8 @@ public class UserService {
     public void deleteAllUsers() {
         userRepository.deleteAllUsers();
     }
+
+    public void saveListOfUsers(List<User> users) {
+        userRepository.saveListOfUsers(users);
+    }
 }

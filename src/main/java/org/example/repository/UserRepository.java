@@ -84,4 +84,24 @@ public class UserRepository {
             em.close();
         }
     }
+
+    public void saveListOfUsers(List<User> users) {
+        if(users == null || users.isEmpty()) return;
+
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try{
+            tx.begin();
+            for(User user : users) {
+                em.persist(user);
+            }
+            tx.commit();
+        } catch(Exception e){
+            if(tx.isActive()) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
 }

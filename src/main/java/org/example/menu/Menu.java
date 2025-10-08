@@ -39,7 +39,10 @@ public class Menu {
                 System.out.print("Dati numarul de useri pe care doriti sa ii inserati in baza de date: ");
                 int numberOfGeneratedUsers = scanner.nextInt();
                 System.out.println("\nSe incepe inserarea...");
-                generatorService.populateDatabaseWithUsers(numberOfGeneratedUsers);
+
+                List<User> users = generatorService.generateUsers(numberOfGeneratedUsers);
+                userService.saveListOfUsers(users);
+
                 System.out.println("Inserarea celor " + numberOfGeneratedUsers + " s-a incheiat cu succes!");
             }
             if (option == 2) {
@@ -47,54 +50,47 @@ public class Menu {
                     System.out.print("Dati numarul de orders pe care doriti sa il inserati in baza de date: ");
                     int numberOfGeneratedOrders = scanner.nextInt();
                     System.out.println("\nSe incepe inserarea...");
-                    generatorService.populateDatabaseWithOrders(numberOfGeneratedOrders);
+
+                    List<Order> orders = generatorService.generateOrders(numberOfGeneratedOrders);
+                    orderService.saveListOfOrders(orders);
+
                     System.out.println("Inserarea celor " + numberOfGeneratedOrders + " s-a incheiat cu succes!");
                 }
                 else throw new IllegalStateException("\nTrebuie sa generezi useri inainte de a popula baza de date cu orders!");
             }
             if (option == 3) {
                 System.out.println("Se incepe inserarea celor 100 de noi useri...");
-                List<User> users = new ArrayList<>();
-                for(int i=0;i<100;i++)
-                {
-                    User user = generatorService.generateUser();
-                    users.add(user);
-                }
+
+                List<User> users = generatorService.generateUsers(100);
+
                 LocalDateTime before = LocalDateTime.now();
-                generatorService.populateDatabaseWithListOfUsers(users);
+                userService.saveListOfUsers(users);
                 LocalDateTime after = LocalDateTime.now();
 
                 System.out.println("Inserarea s-a incheiat cu succes!");
 
                 Duration duration = Duration.between(before, after);
 
-                long seconds = duration.getSeconds();
                 long millis = duration.toMillis();
 
-                System.out.println("\nTimp scurs pentru inserarea a 100 de useri: " + millis + " milisecunde, adica" +
-                        seconds + " secunde");
+                System.out.println("\nTimp scurs pentru inserarea a 100 de useri: " + millis + " milisecunde");
             }
             if (option == 4) {
                 System.out.println("Se incepe inserarea celor 100 de noi orders...");
-                List<Order> orders = new ArrayList<>();
-                for(int i=0;i<100;i++)
-                {
-                    Order order = generatorService.generateOrder();
-                    orders.add(order);
-                }
+
+                List<Order> orders = generatorService.generateOrders(100);
+
                 LocalDateTime before = LocalDateTime.now();
-                generatorService.populateDatabaseWithListOfOrders(orders);
+                orderService.saveListOfOrders(orders);
                 LocalDateTime after = LocalDateTime.now();
 
                 System.out.println("Inserarea s-a incheiat cu succes!");
 
                 Duration duration = Duration.between(before, after);
 
-                long seconds = duration.getSeconds();
                 long millis = duration.toMillis();
 
-                System.out.println("\nTimp scurs pentru inserarea a 100 de orders: " + millis + " milisecunde, adica" +
-                        seconds + " secunde");
+                System.out.println("\nTimp scurs pentru inserarea a 100 de orders: " + millis + " milisecunde");
             }
             if (option == 5) {
                 System.out.println("Se incepe stergerea tuturor entitatilor din baza de date...");

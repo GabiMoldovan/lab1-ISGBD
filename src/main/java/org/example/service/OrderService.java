@@ -32,4 +32,8 @@ public class OrderService {
     public void deleteAllOrders() {
         orderRepository.deleteAllOrders();
     }
+
+    public void saveListOfOrders(List<Order> orders) {
+        orderRepository.saveListOfOrders(orders);
+    }
 }

@@ -5,6 +5,7 @@ import org.example.entity.User;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,10 +13,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GeneratorService {
     private OrderService orderService;
     private UserService userService;
+    private static int countUsers;
 
     public GeneratorService(OrderService orderService, UserService userService) {
         this.orderService = orderService;
         this.userService = userService;
+        countUsers = userService.count();
     }
 
     public int generateRandomNumberBetween(int min, int max) {
@@ -105,7 +108,6 @@ public class GeneratorService {
         BigDecimal amount = generateRandomBigDecimal(min, max);
         String status = generateRandomOrderStatus();
 
-        int countUsers = userService.count();
         Long assignOrderToUser = (long) generateRandomNumberBetween(1, countUsers);
 
         Order order = new Order();
@@ -117,31 +119,19 @@ public class GeneratorService {
         return order;
     }
 
-    public void populateDatabaseWithUsers(int numberOfUsers) {
-        for(int i = 0; i < numberOfUsers; i++) {
-            User user = generateUser();
-            userService.save(user);
-        }
-    }
-
-    public void populateDatabaseWithOrders(int numberOfOrders) {
+    public List<Order> generateOrders(int numberOfOrders) {
+        List<Order> orders = new ArrayList<>();
         for(int i = 0; i < numberOfOrders; i++) {
-            Order order = generateOrder();
-            orderService.save(order);
+            orders.add(generateOrder());
         }
+        return orders;
     }
 
-    public void populateDatabaseWithListOfUsers(List<User> users) {
-        for(int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-            userService.save(user);
+    public List<User> generateUsers(int numberOfUsers) {
+        List<User> users = new ArrayList<>();
+        for(int i = 0; i < numberOfUsers; i++) {
+            users.add(generateUser());
         }
-    }
-
-    public void populateDatabaseWithListOfOrders(List<Order> orders) {
-        for(int i = 0; i < orders.size(); i++) {
-            Order order = orders.get(i);
-            orderService.save(order);
-        }
+        return users;
     }
 }
