@@ -58,10 +58,7 @@ public class OrderRepository {
 
         try{
             tx.begin();
-            List<Order> orders = em.createQuery("SELECT o FROM Order o", Order.class).getResultList();
-            for(Order order : orders) {
-                em.remove(order);
-            }
+            em.createNativeQuery("TRUNCATE TABLE orders RESTART IDENTITY CASCADE").executeUpdate();
             tx.commit();
         } catch (Exception e) {
             if(tx.isActive()) tx.rollback();

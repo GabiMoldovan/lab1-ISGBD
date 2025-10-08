@@ -106,7 +106,7 @@ public class GeneratorService {
         String status = generateRandomOrderStatus();
 
         int countUsers = userService.count();
-        Long assignOrderToUser = (long) generateRandomNumberBetween(0, countUsers);
+        Long assignOrderToUser = (long) generateRandomNumberBetween(1, countUsers);
 
         Order order = new Order();
 

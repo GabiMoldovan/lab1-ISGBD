@@ -73,10 +73,7 @@ public class UserRepository {
         {
             tx.begin();
 
-            List<User> users = em.createQuery("SELECT u FROM User u", User.class).getResultList();
-            for(User user : users) { // when deleting users, it will cascade to orders as well
-                em.remove(user);
-            }
+            em.createNativeQuery("TRUNCATE TABLE users RESTART IDENTITY CASCADE").executeUpdate();
 
             tx.commit();
         } catch(Exception e) {

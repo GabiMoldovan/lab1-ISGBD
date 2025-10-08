@@ -32,7 +32,7 @@ public class Menu {
             System.out.println("3. Masoara durata de inserare a 100 de useri");
             System.out.println("4. Masoara durata de inserare a 100 de orders");
             System.out.println("5. Goleste baza de date (stergere Users si Orders)");
-            System.out.println("\nSelectati una din optiuni (scrieti numarul, ex: 1): ");
+            System.out.print("\nSelectati una din optiuni (scrieti numarul, ex: 1): ");
             int option = scanner.nextInt();
 
             if (option == 1) {
