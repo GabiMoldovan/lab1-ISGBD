@@ -29,6 +29,7 @@ public class Menu {
             System.out.println("3. Masoara durata de inserare a 100 de useri (inserare paralela)");
             System.out.println("4. Masoara durata de inserare a 100 de orders (inserare paralela)");
             System.out.println("5. Goleste baza de date (stergere Users si Orders)");
+            System.out.println("6. Termina programul");
             System.out.print("\nSelectati una din optiuni (scrieti numarul, ex: 1): ");
             int option = scanner.nextInt();
 
@@ -39,14 +40,10 @@ public class Menu {
 
                 List<User> users = generatorService.generateUsers(numberOfGeneratedUsers);
 
-                long start = System.nanoTime();
-                userService.parallelInsertUsers(users, 16, 10000);
-                long end = System.nanoTime();
-
-                long durationMillis = (end - start) / 1_000_000;
+                long timeNeededForInserts = userService.parallelInsertUsers(users, 16, 10000);
 
                 System.out.println("Inserarea celor " + numberOfGeneratedUsers + " useri s-a incheiat cu succes!");
-                System.out.println("Durata: " + durationMillis + " milisecunde");
+                System.out.println("Durata: " + timeNeededForInserts + " milisecunde");
             }
 
             if (option == 2) {
@@ -59,14 +56,10 @@ public class Menu {
 
                     List<Order> orders = generatorService.generateOrders(numberOfGeneratedOrders, actualNumberOfUsers);
 
-                    long start = System.nanoTime();
-                    orderService.parallelInsertOrders(orders, 8, 10000);
-                    long end = System.nanoTime();
-
-                    long durationMillis = (end - start) / 1_000_000;
+                    long timeNeededForInserts = orderService.parallelInsertOrders(orders, 8, 10000);
 
                     System.out.println("Inserarea celor " + numberOfGeneratedOrders + " orders s-a incheiat cu succes!");
-                    System.out.println("Durata: " + durationMillis + " milisecunde");
+                    System.out.println("Durata: " + timeNeededForInserts + " milisecunde");
                 } else {
                     throw new IllegalStateException("\nTrebuie sa generezi useri inainte de a popula baza de date cu orders!");
                 }
@@ -77,14 +70,10 @@ public class Menu {
 
                 List<User> users = generatorService.generateUsers(100);
 
-                long start = System.nanoTime();
-                userService.parallelInsertUsers(users, 8, 14);
-                long end = System.nanoTime();
-
-                long durationMillis = (end - start) / 1_000_000;
+                long timeNeededForInserts = userService.parallelInsertUsers(users, 8, 14);
 
                 System.out.println("Inserarea s-a incheiat cu succes!");
-                System.out.println("Timp scurs pentru inserarea a 100 de useri: " + durationMillis + " milisecunde");
+                System.out.println("Timp scurs pentru inserarea a 100 de useri: " + timeNeededForInserts + " milisecunde");
             }
 
             if (option == 4) {
@@ -94,14 +83,11 @@ public class Menu {
 
                 List<Order> orders = generatorService.generateOrders(100, actualNumberOfUsers);
 
-                long start = System.nanoTime();
-                orderService.parallelInsertOrders(orders, 8, 14);
-                long end = System.nanoTime();
+                long timeNeededForInserts = orderService.parallelInsertOrders(orders, 8, 14);
 
-                long durationMillis = (end - start) / 1_000_000;
 
                 System.out.println("Inserarea s-a incheiat cu succes!");
-                System.out.println("Timp scurs pentru inserarea a 100 de orders: " + durationMillis + " milisecunde");
+                System.out.println("Timp scurs pentru inserarea a 100 de orders: " + timeNeededForInserts + " milisecunde");
             }
 
             if (option == 5) {
@@ -109,6 +95,10 @@ public class Menu {
                 orderService.deleteAllOrders();
                 userService.deleteAllUsers();
                 System.out.println("Entitatile au fost sterse!");
+            }
+
+            if (option == 6) {
+                System.exit(0);
             }
         }
     }

@@ -68,8 +68,10 @@ public class OrderRepository {
         }
     }
 
-    public void saveListOfOrders(List<Order> orders) {
-        if(orders.isEmpty() || orders == null) return;
+    public long saveListOfOrders(List<Order> orders) {
+        if(orders.isEmpty() || orders == null) return 0;
+
+        long time = 0L;
 
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -78,7 +80,14 @@ public class OrderRepository {
             tx.begin();
             int batchSize = 1500;
             for(int i=0;i<orders.size();i++) {
+                long start = System.nanoTime();
                 em.persist(orders.get(i));
+                long end = System.nanoTime();
+
+                long durationMillis = (end - start) / 1_000_000;
+
+                time+=durationMillis;
+
                 if(i > 0 && i % batchSize == 0) {
                     em.flush();
                     em.clear();
@@ -92,6 +101,7 @@ public class OrderRepository {
             e.printStackTrace();
         } finally {
             em.close();
+            return time;
         }
     }
 }

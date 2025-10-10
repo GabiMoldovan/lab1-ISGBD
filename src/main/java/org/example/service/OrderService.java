@@ -5,9 +5,7 @@ import org.example.repository.OrderRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class OrderService {
     private OrderRepository orderRepository;
@@ -37,8 +35,8 @@ public class OrderService {
         orderRepository.deleteAllOrders();
     }
 
-    public void saveListOfOrders(List<Order> orders) {
-        orderRepository.saveListOfOrders(orders);
+    public long saveListOfOrders(List<Order> orders) {
+        return orderRepository.saveListOfOrders(orders);
     }
 
     private static <T> List<List<T>> partition(List<T> list, int size) {
@@ -61,11 +59,28 @@ public class OrderService {
         }
     }
 
-    public void parallelInsertOrders(List<Order> orders, int threadCount, int batchSize) {
+    public long parallelInsertOrders(List<Order> orders, int threadCount, int batchSize) {
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        List<Future<Long>> futures = new ArrayList<>();
+
+        // Submit tasks in parallel
         for (List<Order> batch : partition(orders, batchSize)) {
-            executorService.submit(() -> saveListOfOrders(batch));
+            Callable<Long> task = () -> saveListOfOrders(batch);
+            futures.add(executorService.submit(task));
         }
+
+        long totalTime = 0L;
+
+        // Collect results from each future
+        for(Future<Long> future : futures) {
+            try{
+                totalTime += future.get(); // Waits for the task to finish and gets the result
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+
         shutdownAndAwait(executorService);
+        return totalTime;
     }
 }

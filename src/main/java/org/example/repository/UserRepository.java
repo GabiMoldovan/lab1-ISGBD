@@ -85,8 +85,10 @@ public class UserRepository {
         }
     }
 
-    public void saveListOfUsers(List<User> users) {
-        if(users == null || users.isEmpty()) return;
+    public long saveListOfUsers(List<User> users) {
+        if(users == null || users.isEmpty()) return 0;
+
+        long time = 0L;
 
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -95,7 +97,14 @@ public class UserRepository {
             tx.begin();
             int batchSize = 1500;
             for (int i = 0; i < users.size(); i++) {
+                long start = System.nanoTime();
                 em.persist(users.get(i));
+                long end = System.nanoTime();
+
+                long durationMillis = (end - start) / 1_000_000;
+
+                time += durationMillis;
+
                 if (i > 0 && i % batchSize == 0) {
                     em.flush();
                     em.clear();
@@ -109,6 +118,7 @@ public class UserRepository {
             e.printStackTrace();
         } finally {
             em.close();
+            return time;
         }
     }
 }
